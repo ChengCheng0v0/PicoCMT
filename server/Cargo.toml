@@ -4,3 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+log = "0.4.22"
+clogger = { git = "https://github.com/ChengCheng0v0/CLogger" }
+tokio = { version = "1.42.0", features = ["full"] }
+axum = "0.8.0-rc.1"
