@@ -5,6 +5,17 @@ edition = "2021"
 
 [dependencies]
 log = "0.4.22"
+colored = "2.2.0"
 clogger = { git = "https://github.com/ChengCheng0v0/CLogger" }
 tokio = { version = "1.42.0", features = ["full"] }
 axum = "0.8.0-rc.1"
+sqlx = { version = "0.8.2", features = [
+  "runtime-tokio-native-tls",
+  "macros",
+  "uuid",
+  "chrono",
+  "mysql",
+] }
+uuid = "1.11.0"
+chrono = "0.4.39"
+serde = "1.0.217"
