@@ -38,7 +38,7 @@ impl From<cmt_manager::Comment> for Response {
 pub async fn handler(State(db_pool): State<MySqlPool>) -> impl IntoResponse {
     match cmt_manager::get_top_comments(&db_pool).await {
         Ok(comments) => {
-            // 将 Comment 转换为 CommentResponse
+            // 将 Comment 转换为 Response
             let response: Vec<Response> = comments.into_iter().map(Response::from).collect();
             // 返回 JSON
             Json(response).into_response()
