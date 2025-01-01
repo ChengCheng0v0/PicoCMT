@@ -1,6 +1,9 @@
-use std::process;
+use std::{net::SocketAddr, process};
 
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 use clogger::*;
 use sqlx::MySqlPool;
 use tokio::net::TcpListener;
@@ -33,6 +36,7 @@ async fn main() {
             "/api/get_top_comments",
             get(handlers::get_top_comments::handler),
         )
+        .route("/api/add_comment", post(handlers::add_comment::handler))
         .with_state(db_pool);
 
     // 监听地址
@@ -40,5 +44,10 @@ async fn main() {
     c_log!(format!("正在监听地址: {}", listener.local_addr().unwrap()));
 
     // 启动服务
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<SocketAddr>(),
+    )
+    .await
+    .unwrap();
 }
