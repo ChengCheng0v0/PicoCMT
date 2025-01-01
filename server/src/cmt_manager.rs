@@ -59,13 +59,15 @@ pub async fn add_comment(
 
     // 写入数据库
     sqlx::query(
-        "INSERT INTO comments (id, nickname, email, content, created_at) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO comments (id, parent_id, nickname, email, content, created_at, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&comment.id)
+    .bind(&comment.parent_id)
     .bind(&comment.nickname)
     .bind(&comment.email)
     .bind(&comment.content)
     .bind(comment.created_at)
+    .bind(&comment.ip_address)
     .execute(db_pool)
     .await?;
 
