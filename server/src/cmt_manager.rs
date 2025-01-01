@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use clogger::*;
 use sqlx::{FromRow, MySqlPool};
 use uuid::Uuid;
@@ -30,6 +32,21 @@ pub async fn get_top_comments(db_pool: &MySqlPool) -> Result<Vec<Comment>, sqlx:
     let comments = sqlx::query_as::<_, Comment>(
         "SELECT * FROM comments WHERE parent_id IS NULL ORDER BY created_at DESC",
     )
+    .fetch_all(db_pool)
+    .await?;
+
+    Ok(comments)
+}
+
+// 根据父评论 ID 获取所有子评论
+pub async fn get_sub_comments(
+    db_pool: &MySqlPool,
+    parent_id: Cow<'_, str>,
+) -> Result<Vec<Comment>, sqlx::Error> {
+    let comments = sqlx::query_as::<_, Comment>(
+        "SELECT * FROM comments WHERE parent_id = ? ORDER BY created_at DESC",
+    )
+    .bind(parent_id)
     .fetch_all(db_pool)
     .await?;
 
