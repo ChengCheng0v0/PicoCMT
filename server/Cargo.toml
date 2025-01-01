@@ -16,6 +16,6 @@ sqlx = { version = "0.8.2", features = [
   "chrono",
   "mysql",
 ] }
-uuid = "1.11.0"
+uuid = { version = "1.11.0", features = ["v4"] }
 chrono = "0.4.39"
 serde = "1.0.217"
