@@ -1,0 +1,27 @@
+{
+    "name": "picocmt",
+    "version": "1.0.0",
+    "description": "None",
+    "keywords": [
+        "rust"
+    ],
+    "homepage": "https://github.com/ChengCheng0v0/PicoCMT#readme",
+    "bugs": {
+        "url": "https://github.com/ChengCheng0v0/PicoCMT/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ChengCheng0v0/PicoCMT.git"
+    },
+    "license": "GPL-3.0-or-later",
+    "author": "成成0v0 (hic.top, chengcheng@miao.ms)",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "eslint": "^9.11.1"
+    },
+    "dependencies": {
+        "eslint-config-prettier": "^9.1.0"
+    }
+}
