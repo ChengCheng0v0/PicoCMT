@@ -36,6 +36,10 @@ async fn main() {
             "/api/get_top_comments",
             get(handlers::get_top_comments::handler),
         )
+        .route(
+            "/api/get_sub_comments",
+            get(handlers::get_sub_comments::handler),
+        )
         .route("/api/add_comment", post(handlers::add_comment::handler))
         .with_state(db_pool);
 
