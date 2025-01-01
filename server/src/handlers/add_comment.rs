@@ -3,6 +3,7 @@ use std::net::SocketAddr;
 use axum::{extract::ConnectInfo, extract::State, response::IntoResponse, Json};
 use clogger::*;
 use serde::Deserialize;
+use serde_json::json;
 use sqlx::MySqlPool;
 
 use crate::cmt_manager;
@@ -36,14 +37,14 @@ pub async fn handler(
             c_log!(format!("(IP: {}) 新增了一条评论: {:?}", addr.ip(), comment));
 
             // 返回 JSON
-            Json("success").into_response()
+            Json(json!({ "result": "success" })).into_response()
         }
         Err(e) => {
             c_error!(format!("新增评论时出现错误: {}", e));
 
             (
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                "出现内部错误，无法新增评论",
+                Json(json!({"result": "出现内部错误，无法新增评论"})),
             )
                 .into_response()
         }

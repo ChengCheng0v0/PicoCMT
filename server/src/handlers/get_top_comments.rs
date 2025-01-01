@@ -1,6 +1,7 @@
 use axum::{extract::State, response::IntoResponse, Json};
 use clogger::*;
 use serde::Serialize;
+use serde_json::json;
 use sqlx::MySqlPool;
 
 use crate::cmt_manager;
@@ -48,7 +49,7 @@ pub async fn handler(State(db_pool): State<MySqlPool>) -> impl IntoResponse {
 
             (
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR,
-                "出现内部错误，无法获取顶层评论",
+                Json(json!({"result": "出现内部错误，无法获取顶层评论"})),
             )
                 .into_response()
         }
