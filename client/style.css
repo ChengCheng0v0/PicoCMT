@@ -53,7 +53,7 @@ body {
     overflow: hidden;
     width: 100%;
     height: 150px;
-    margin-bottom: 30px;
+    margin-bottom: 70px;
     padding: 22px 0 0 0;
     border-radius: 10px;
     color: var(--color-text);
@@ -127,6 +127,86 @@ body {
             i {
                 font-size: 12px;
                 margin-right: 4px;
+            }
+        }
+    }
+}
+
+.picocmt > .comments {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 150px;
+    width: 100%;
+    gap: 10px;
+    border-radius: 10px;
+    color: var(--color-text);
+
+    .comment {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .comment.left {
+        flex-direction: row;
+    }
+    .comment.right {
+        flex-direction: row-reverse;
+
+        .meta {
+            margin-left: auto;
+        }
+    }
+
+    .comment {
+        .avatar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--color-dent);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 2px solid var(--color-key);
+            border-radius: 50%;
+            box-sizing: border-box;
+        }
+
+        position: relative;
+        .bubble {
+            display: flex;
+            flex-direction: column;
+            max-width: calc(100% - 124px);
+            padding: 8px 12px;
+            border-radius: 10px;
+            background-color: var(--color-outline);
+            color: var(--color-text);
+            font-family: sans-serif;
+
+            .meta {
+                display: flex;
+                margin-bottom: 6px;
+                gap: 6px;
+                span {
+                    width: fit-content;
+                    padding: 0 6px;
+                    border-radius: 100px;
+                    background-color: var(--color-key);
+                    color: var(--color-accent-fg);
+                    font-size: 12px;
+                }
+            }
+
+            .content {
+                font-size: 14px;
             }
         }
     }
