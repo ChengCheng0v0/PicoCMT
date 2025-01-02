@@ -1,0 +1,133 @@
+:_root {
+    --color-base: #fff9ea;
+    --color-mantle: #fef4dd;
+    --color-crust: #ebdcb8;
+    --color-dent: #f5eedd;
+    --color-text: #7a5a43;
+    --color-text-selection: #f5d09f;
+    --color-key: #ae7954;
+    --color-weak: #cdb09c;
+    --color-divide: #c1a177;
+    --color-outline: #ffdb9a;
+    --color-accent: #f59768;
+    --color-accent-fg: #ffdb9a;
+    --color-overlay: #ebdcb8;
+}
+
+:root {
+    --color-base: #1e1e2e;
+    --color-mantle: #2e2e3e;
+    --color-crust: #20202f;
+    --color-dent: #2e2e3e;
+    --color-text: #e3bfd3;
+    --color-text-selection: #d08a9a;
+    --color-key: #c48fad;
+    --color-weak: #423e4a;
+    --color-divide: #a67a8a;
+    --color-outline: #503843;
+    --color-accent: #ff95af;
+    --color-accent-fg: #503843;
+    --color-overlay: #504262;
+}
+
+html,
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-base);
+}
+
+.picocmt {
+    max-width: 800px;
+    width: 100%;
+}
+
+.picocmt > .send {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+    height: 150px;
+    margin-bottom: 30px;
+    padding: 22px 0 0 0;
+    border-radius: 10px;
+    color: var(--color-text);
+
+    .title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 22px;
+        padding: 0 6px;
+        background-color: var(--color-key);
+        color: var(--color-accent-fg);
+        font-size: 14px;
+        font-weight: bold;
+        user-select: none;
+
+        i {
+            margin-right: 6px;
+        }
+    }
+
+    .editor {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 6px 6px;
+        border: none;
+        outline: none;
+        resize: none;
+        box-sizing: border-box;
+        background-color: var(--color-outline);
+        color: var(--color-text);
+    }
+
+    .bottom {
+        display: flex;
+        flex-grow: 1;
+        width: 100%;
+        height: 42px;
+        padding: 6px;
+        box-sizing: border-box;
+        background-color: var(--color-divide);
+
+        input {
+            border: none;
+            outline: none;
+            padding: 0 8px;
+            border-radius: 100px;
+            background-color: var(--color-outline);
+            color: var(--color-text);
+        }
+        input.nickname {
+            max-width: 100px;
+            width: 20%;
+            margin-right: 6px;
+        }
+        input.email {
+            max-width: 200px;
+            width: 40%;
+        }
+
+        .send-button {
+            width: 70px;
+            margin-left: auto;
+            border-radius: 100px;
+            border: none;
+            background-color: var(--color-accent);
+            color: var(--color-accent-fg);
+
+            i {
+                font-size: 12px;
+                margin-right: 4px;
+            }
+        }
+    }
+}
