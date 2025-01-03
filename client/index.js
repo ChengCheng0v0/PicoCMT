@@ -15,33 +15,34 @@ async function fetchComments(url) {
 }
 
 // 获取 Gravatar 头像
-async function getGravatarUrl(email, id) {
+async function getGravatarUrl(email, nickname) {
     if (email) {
-        const hash = SparkMD5.hash(email.trim().toLowerCase());
-        const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=404`;
+        const emailHash = SparkMD5.hash(email.trim().toLowerCase());
+        const gravatarUrl = `https://www.gravatar.com/avatar/${emailHash}?d=404`;
 
         try {
             const response = await fetch(gravatarUrl);
             if (response.ok) {
-                return `https://www.gravatar.com/avatar/${hash}`;
+                return `https://www.gravatar.com/avatar/${emailHash}`;
             }
         } catch (e) {
             console.error("从 Gravatar 获取头像时出现错误: ", e);
         }
 
-        return `https://www.loliapi.com/acg/pp/?random=${hash.slice(0, 8)}`;
+        return `https://www.loliapi.com/acg/pp/?random=${emailHash.slice(0, 8)}`;
     }
 
-    return `https://www.loliapi.com/acg/pp/?random=${id}`;
+    const nicknameHash = SparkMD5.hash(nickname.trim().toLowerCase());
+    return `https://www.loliapi.com/acg/pp/?random=${nicknameHash}`;
 }
 
 // 创建评论元素
 async function createCommentElement(comment, alignment) {
     const { id, parent_id, nickname, email, content } = comment;
     const shortId = `#${id.slice(0, 4)}`;
-    const replyId = parent_id ? `, Re: #${parent_id.slice(0, 4)}` : "";
+    const replyId = parent_id ? ` <i class="fa-solid fa-reply" style="transform: rotateY(180deg);"></i> #${parent_id.slice(0, 4)}` : "";
 
-    const avatarUrl = await getGravatarUrl(email, id);
+    const avatarUrl = await getGravatarUrl(email, nickname);
 
     const commentDiv = document.createElement("div");
     commentDiv.className = `comment ${alignment}`;
@@ -52,9 +53,9 @@ async function createCommentElement(comment, alignment) {
         </div>
         <div class="bubble">
             <div class="meta">
-                <span class="id">${shortId}${replyId}</span>
-                <span class="nickname">${nickname}</span>
-                ${email ? `<span class="email">${email}</span>` : ""}
+                <span class="id"><i class="fa-solid fa-circle"></i> ${shortId}${replyId}</span>
+                <span class="nickname"><i class="fa-solid fa-user-pen"></i> ${nickname}</span>
+                ${email ? `<span class="email"><i class="fa-solid fa-envelope"></i> ${email}</span>` : ""}
             </div>
             <div class="content">
                 <span>${content}</span>
