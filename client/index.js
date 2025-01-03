@@ -1,5 +1,9 @@
 /* global SparkMD5*/
 
+import "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/spark-md5/3.0.2/spark-md5.min.js";
+
+var picocmt;
+
 // 获取评论数据
 async function fetchComments(url) {
     const response = await fetch(url);
@@ -25,7 +29,7 @@ function getGravatarUrl(email, id) {
             console.error("从 Gravatar 获取头像时出现错误: ", e);
         }
 
-        return `https://www.loliapi.com/acg/pp/?random=${email}`;
+        return `https://www.loliapi.com/acg/pp/?random=${hash.slice(0, 8)}`;
     }
 
     return `https://www.loliapi.com/acg/pp/?random=${id}`;
@@ -66,7 +70,7 @@ async function renderComments(comments, container, alignment) {
         container.appendChild(commentElement);
 
         // 获取子评论并递归渲染
-        const subComments = await fetchComments(`http://127.0.0.1:3000/api/get_sub_comments?parent_id=${comment.id}`);
+        const subComments = await fetchComments(`${picocmt.dataset.server}/api/get_sub_comments?parent_id=${comment.id}`);
         if (subComments.length > 0) {
             await renderComments(subComments, container, "right");
         }
@@ -81,13 +85,15 @@ async function initComments() {
         return;
     }
 
-    const topComments = await fetchComments("http://127.0.0.1:3000/api/get_top_comments");
+    const topComments = await fetchComments(`${picocmt.dataset.server}/api/get_top_comments`);
     await renderComments(topComments, commentsContainer, "left");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    picocmt = document.getElementById("picocmt-inject");
+
     // 注入 PicoCMT 的 HTML 元素
-    document.getElementById("picocmt-inject").innerHTML = `
+    picocmt.innerHTML = `
         <div class="send">
             <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
             <textarea id="comment-content" class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
