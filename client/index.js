@@ -15,13 +15,13 @@ async function fetchComments(url) {
 }
 
 // 获取 Gravatar 头像
-function getGravatarUrl(email, id) {
+async function getGravatarUrl(email, id) {
     if (email) {
         const hash = SparkMD5.hash(email.trim().toLowerCase());
         const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=404`;
 
         try {
-            const response = fetch(gravatarUrl);
+            const response = await fetch(gravatarUrl);
             if (response.ok) {
                 return `https://www.gravatar.com/avatar/${hash}`;
             }
@@ -36,17 +36,19 @@ function getGravatarUrl(email, id) {
 }
 
 // 创建评论元素
-function createCommentElement(comment, alignment) {
+async function createCommentElement(comment, alignment) {
     const { id, parent_id, nickname, email, content } = comment;
     const shortId = `#${id.slice(0, 4)}`;
     const replyId = parent_id ? `, Re: #${parent_id.slice(0, 4)}` : "";
+
+    const avatarUrl = await getGravatarUrl(email, id);
 
     const commentDiv = document.createElement("div");
     commentDiv.className = `comment ${alignment}`;
 
     commentDiv.innerHTML = `
         <div class="avatar">
-            <img src="${getGravatarUrl(email, id)}" alt="" />
+            <img src="${avatarUrl}" alt="" />
         </div>
         <div class="bubble">
             <div class="meta">
@@ -66,7 +68,7 @@ function createCommentElement(comment, alignment) {
 // 递归渲染评论
 async function renderComments(comments, container, alignment) {
     for (const comment of comments) {
-        const commentElement = createCommentElement(comment, alignment);
+        const commentElement = await createCommentElement(comment, alignment);
         container.appendChild(commentElement);
 
         // 获取子评论并递归渲染
