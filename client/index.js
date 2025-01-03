@@ -122,22 +122,72 @@ async function initComments() {
     await renderComments(topComments, commentsContainer, "left");
 }
 
+// 发送评论
+async function sendComment() {
+    // 获取需要发送的内容
+    const comment = {
+        nickname: document.querySelector(".picocmt > .send > .bottom > .nickname").value,
+        email: document.querySelector(".picocmt > .send > .bottom > .email").value,
+        content: document.querySelector(".picocmt > .send > .editor").value,
+    };
+
+    // 检查输入是否合法
+    if (!comment.content) {
+        notify("open", "warn", "评论无法发送", "评论内容不能为空。");
+        return;
+    } else if (comment.content.length > 256) {
+        notify("open", "warn", "评论无法发送", "评论内容长度不能超过 256 字符，请检查并修改评论内容。");
+        return;
+    }
+    if (!comment.nickname) {
+        notify("open", "warn", "评论无法发送", "昵称不能为空，请输入一个长度不超过 16 字符的昵称。");
+        return;
+    } else if (comment.nickname.length > 16) {
+        notify("open", "warn", "评论无法发送", "昵称长度不能超过 16 字符，请检查并修改昵称设置。");
+        return;
+    }
+    if (comment.email.length > 32) {
+        notify("open", "warn", "评论无法发送", "邮箱长度不能超过 32 字符，请检查并修改邮箱设置。");
+        return;
+    } else if (comment.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(comment.email)) {
+        notify("open", "warn", "评论无法发送", "邮箱格式不合法，请检查并修改邮箱设置。");
+        return;
+    }
+
+    // 构建请求
+    const apiUrl = `${picocmt.dataset.server}/api/add_comment`;
+    const sendOptions = {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: `{"parent_id":null,"nickname":"${comment.nickname}","email":"${comment.email ? comment.email : ""}","content":"${comment.content}"}`,
+    };
+
+    // 发送请求
+    try {
+        const response = await fetch(apiUrl, sendOptions);
+        const data = await response.json();
+        notify("open", "info", "success", data);
+    } catch (e) {
+        notify("open", "error", "评论发送失败", e);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     picocmt = document.getElementById("picocmt-inject");
 
     // 注入 PicoCMT 的 HTML 元素
     picocmt.innerHTML = `
-        <div class="notify warn">
-            <div class="title">评论无法发送</div>
+        <div class="notify">
+            <div class="title"></div>
             <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
-            <div class="content">过长的内容长度，请检查并修改评论。</div>
+            <div class="content"></div>
         </div>
         <div class="send">
             <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
-            <textarea id="comment-content" class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
+            <textarea class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
             <div class="bottom">
-                <input class="nickname" type="text" placeholder="昵称" />
-                <input class="email" type="email" placeholder="邮箱" />
+                <input class="nickname" type="text" placeholder="昵称" required />
+                <input class="email" type="email" placeholder="邮箱 (选填)" />
                 <button class="send-button"><i class="fa-solid fa-paper-plane"></i>发送</button>
             </div>
         </div>
@@ -150,5 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 添加关闭通知的操作监听
     document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
         notify("close");
+    });
+
+    // 添加发送评论的操作监听
+    document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
+        sendComment();
     });
 });
