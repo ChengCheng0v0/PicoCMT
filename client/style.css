@@ -1,4 +1,4 @@
-:_root {
+:root {
     --color-base: #fff9ea;
     --color-mantle: #fef4dd;
     --color-crust: #ebdcb8;
@@ -12,6 +12,12 @@
     --color-accent: #f59768;
     --color-accent-fg: #ffdb9a;
     --color-overlay: #ebdcb8;
+    --color-positive: #a8cf88;
+    --color-positive-fg: #4c634e;
+    --color-danger: #e07a83;
+    --color-danger-fg: #723033;
+    --color-warning: #f9d48b;
+    --color-warning-fg: #8b5a2d;
 }
 
 :root {
@@ -28,6 +34,12 @@
     --color-accent: #ff95af;
     --color-accent-fg: #503843;
     --color-overlay: #504262;
+    --color-positive: #8ccf7e;
+    --color-positive-fg: #2f4726;
+    --color-danger: #e8647c;
+    --color-danger-fg: #4a1e2c;
+    --color-warning: #f5c26b;
+    --color-warning-fg: #4a341f;
 }
 
 html,
@@ -44,6 +56,55 @@ body {
 .picocmt {
     max-width: 800px;
     width: 100%;
+}
+
+.picocmt > .notify {
+    position: relative;
+    display: none;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    font-size: 14px;
+
+    .title {
+        font-weight: bold;
+    }
+
+    .close {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        border: none;
+        background-color: #00000000;
+        font-size: 18px;
+    }
+}
+.picocmt > .notify.info {
+    display: inline-block;
+    background-color: var(--color-positive);
+    color: var(--color-positive-fg);
+    .close {
+        color: var(--color-positive-fg);
+    }
+}
+.picocmt > .notify.warn {
+    display: inline-block;
+    background-color: var(--color-warning);
+    color: var(--color-warning-fg);
+    .close {
+        color: var(--color-warning-fg);
+    }
+}
+.picocmt > .notify.error {
+    display: inline-block;
+    background-color: var(--color-danger);
+    color: var(--color-danger-fg);
+    .close {
+        color: var(--color-danger-fg);
+    }
 }
 
 .picocmt > .send {

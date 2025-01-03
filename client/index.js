@@ -4,6 +4,36 @@ import "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/spark-md5/3.0.2/spark-m
 
 var picocmt;
 
+// 控制通知
+function notify(operation, type, title, content) {
+    const notifyBody = document.querySelector(".picocmt > .notify");
+    const notifyTitle = document.querySelector(".picocmt > .notify > .title");
+    const notifyContent = document.querySelector(".picocmt > .notify > .content");
+
+    switch (operation) {
+        case "open":
+            // 关闭先前通知
+            notify("close");
+            // 打开新通知
+            notifyBody.classList.value = `notify ${type}`;
+            notifyTitle.innerText = title;
+            notifyContent.innerText = content;
+
+            break;
+
+        case "close":
+            // 关闭通知
+            notifyBody.classList.value = "notify";
+            notifyTitle.innerText = "";
+            notifyContent.innerText = "";
+
+            break;
+
+        default:
+            break;
+    }
+}
+
 // 获取评论数据
 async function fetchComments(url) {
     const response = await fetch(url);
@@ -97,6 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 注入 PicoCMT 的 HTML 元素
     picocmt.innerHTML = `
+        <div class="notify warn">
+            <div class="title">评论无法发送</div>
+            <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
+            <div class="content">过长的内容长度，请检查并修改评论。</div>
+        </div>
         <div class="send">
             <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
             <textarea id="comment-content" class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
@@ -111,4 +146,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 启动评论渲染
     initComments().catch(err => console.error("无法初始化评论: ", err));
+
+    // 添加关闭通知的操作监听
+    document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
+        notify("close");
+    });
 });
