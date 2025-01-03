@@ -5,23 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>PicoCMT</title>
 
+        <script src="https://cdn.jsdelivr.net/npm/spark-md5@3.0.2/spark-md5.min.js"></script>
         <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/6.0.0/css/all.css" />
 
         <script src="./index.js" type="module"></script>
         <link href="./style.css" rel="stylesheet" />
     </head>
     <body>
-        <div class="picocmt" data-server="http://127.0.0.1:3000">
-            <div class="send">
-                <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
-                <textarea id="comment-content" class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
-                <div class="bottom">
-                    <input class="nickname" type="text" placeholder="昵称" />
-                    <input class="email" type="email" placeholder="邮箱" />
-                    <button class="send-button"><i class="fa-solid fa-paper-plane"></i>发送</button>
-                </div>
-            </div>
-            <div class="comments"></div>
-        </div>
+        <div id="picocmt-inject" class="picocmt" data-server="http://127.0.0.1:3000"></div>
     </body>
 </html>

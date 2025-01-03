@@ -86,6 +86,20 @@ async function initComments() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // 注入 PicoCMT 的 HTML 元素
+    document.getElementById("picocmt-inject").innerHTML = `
+        <div class="send">
+            <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
+            <textarea id="comment-content" class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
+            <div class="bottom">
+                <input class="nickname" type="text" placeholder="昵称" />
+                <input class="email" type="email" placeholder="邮箱" />
+                <button class="send-button"><i class="fa-solid fa-paper-plane"></i>发送</button>
+            </div>
+        </div>
+        <div class="comments"></div>
+    `;
+
     // 启动评论渲染
     initComments().catch(err => console.error("无法初始化评论: ", err));
 });
