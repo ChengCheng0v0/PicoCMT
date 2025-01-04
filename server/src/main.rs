@@ -20,14 +20,14 @@ async fn main() {
 
     // 路由的结构体
     struct Routes {
+        root: Router<Pool<MySql>>,
         general: Router<Pool<MySql>>,
-        add_comment: Router<Pool<MySql>>,
     }
 
     // 定义路由
     let routes = Routes {
+        root: Router::new().route("/", get(handlers::root)),
         general: Router::new()
-            .route("/", get(handlers::root))
             .route(
                 "/api/get_top_comments",
                 get(handlers::get_top_comments::handler),
@@ -35,8 +35,8 @@ async fn main() {
             .route(
                 "/api/get_sub_comments",
                 get(handlers::get_sub_comments::handler),
-            ),
-        add_comment: Router::new().route("/api/add_comment", post(handlers::add_comment::handler)),
+            )
+            .route("/api/add_comment", post(handlers::add_comment::handler)),
     };
 
     // 连接数据库
@@ -54,8 +54,8 @@ async fn main() {
 
     // 合并路由
     let app = routes
-        .general
-        .merge(routes.add_comment)
+        .root
+        .merge(routes.general)
         // 添加全局中间件
         .layer(TraceLayer::new_for_http()) // 日志跟踪
         .layer(ConcurrencyLimitLayer::new(10)) // 全局并发限制
