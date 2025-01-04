@@ -3,7 +3,7 @@ use std::net::SocketAddr;
 use axum::{extract::ConnectInfo, extract::State, response::IntoResponse, Json};
 use clogger::*;
 use regex::Regex;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sqlx::MySqlPool;
 
@@ -18,8 +18,14 @@ pub struct Request {
     content: String,
 }
 
+// 响应的结构体
+#[derive(Serialize)]
+struct Response {
+    result: String,
+    comment: cmt_manager::Comment,
+}
+
 // 校验错误的枚举
-#[derive(Debug)]
 enum ValidationError {
     EmptyField(String),
     TooLong(String, usize),
@@ -110,7 +116,11 @@ pub async fn handler(
             c_log!(format!("(IP: {}) 新增了一条评论: {:?}", addr.ip(), comment));
 
             // 返回 JSON
-            Json(json!({ "result": "success" })).into_response()
+            Json(Response {
+                result: "success".into(),
+                comment,
+            })
+            .into_response()
         }
         Err(e) => {
             c_error!(format!("新增评论时出现错误: {}", e));

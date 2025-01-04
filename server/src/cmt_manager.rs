@@ -1,11 +1,12 @@
 use std::borrow::Cow;
 
 use clogger::*;
+use serde::Serialize;
 use sqlx::{FromRow, MySqlPool};
 use uuid::Uuid;
 
 // 评论的数据结构
-#[derive(Debug, FromRow)]
+#[derive(Debug, FromRow, Serialize)]
 pub struct Comment {
     pub id: String,
     pub parent_id: Option<String>,
@@ -18,7 +19,7 @@ pub struct Comment {
 }
 
 // 新增评论信息的数据结构
-#[derive(Debug, FromRow)]
+#[derive(FromRow)]
 pub struct NewCommentInfo {
     pub parent_id: Option<String>,
     pub nickname: String,

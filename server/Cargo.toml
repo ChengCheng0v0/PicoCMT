@@ -17,7 +17,7 @@ sqlx = { version = "0.8.2", features = [
   "mysql",
 ] }
 uuid = { version = "1.11.0", features = ["v4"] }
-chrono = "0.4.39"
+chrono = { version = "0.4.39", features = ["serde"] }
 serde = "1.0.217"
 serde_json = "1.0.134"
 regex = "1.11.1"
