@@ -5,8 +5,10 @@ use axum::{
     Router,
 };
 use clogger::*;
-use sqlx::MySqlPool;
+use sqlx::{MySql, MySqlPool, Pool};
 use tokio::net::TcpListener;
+use tower::limit::ConcurrencyLimitLayer;
+use tower_http::trace::TraceLayer;
 
 mod cmt_manager;
 mod handlers;
@@ -15,6 +17,27 @@ mod handlers;
 async fn main() {
     // 初始化 CLogger
     init_clogger("/dev/null"); // 将输出写入黑洞
+
+    // 路由的结构体
+    struct Routes {
+        general: Router<Pool<MySql>>,
+        add_comment: Router<Pool<MySql>>,
+    }
+
+    // 定义路由
+    let routes = Routes {
+        general: Router::new()
+            .route("/", get(handlers::root))
+            .route(
+                "/api/get_top_comments",
+                get(handlers::get_top_comments::handler),
+            )
+            .route(
+                "/api/get_sub_comments",
+                get(handlers::get_sub_comments::handler),
+            ),
+        add_comment: Router::new().route("/api/add_comment", post(handlers::add_comment::handler)),
+    };
 
     // 连接数据库
     let database_url = "mysql://test:thisisapasswd@127.0.0.1/picocmt";
@@ -29,19 +52,14 @@ async fn main() {
         }
     };
 
-    // 定义路由
-    let app = Router::new()
-        .route("/", get(handlers::root))
-        .route(
-            "/api/get_top_comments",
-            get(handlers::get_top_comments::handler),
-        )
-        .route(
-            "/api/get_sub_comments",
-            get(handlers::get_sub_comments::handler),
-        )
-        .route("/api/add_comment", post(handlers::add_comment::handler))
-        .with_state(db_pool);
+    // 合并路由
+    let app = routes
+        .general
+        .merge(routes.add_comment)
+        // 添加全局中间件
+        .layer(TraceLayer::new_for_http()) // 日志跟踪
+        .layer(ConcurrencyLimitLayer::new(10)) // 全局并发限制
+        .with_state(db_pool); // 共享数据库池
 
     // 监听地址
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
