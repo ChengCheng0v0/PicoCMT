@@ -5,7 +5,7 @@ use serde::Serialize;
 use sqlx::{FromRow, MySqlPool};
 use uuid::Uuid;
 
-// 评论的数据结构
+// 评论的结构体
 #[derive(Debug, FromRow, Serialize)]
 pub struct Comment {
     pub id: String,
@@ -18,7 +18,7 @@ pub struct Comment {
     pub ip_address: Option<String>,
 }
 
-// 新增评论信息的数据结构
+// 新增评论信息的结构体
 #[derive(FromRow)]
 pub struct NewCommentInfo {
     pub parent_id: Option<String>,
