@@ -125,7 +125,7 @@ async function initComments() {
 // 发送评论
 async function sendComment() {
     // 获取需要发送的内容
-    const comment = {
+    let comment = {
         nickname: document.querySelector(".picocmt > .send > .bottom > .nickname").value,
         email: document.querySelector(".picocmt > .send > .bottom > .email").value,
         content: document.querySelector(".picocmt > .send > .editor").value,
@@ -165,8 +165,20 @@ async function sendComment() {
     // 发送请求
     try {
         const response = await fetch(apiUrl, sendOptions);
-        const data = await response.json();
-        notify("open", "info", "success", data);
+        if (response.ok) {
+            const data = await response.json();
+            notify("open", "info", "评论发送成功！", "o(*≧▽≦)ツ┏━┓");
+
+            // 补全评论数据
+            comment.id = data.comment.id;
+            comment.create_at = data.comment.create_at;
+
+            // 渲染刚发送的评论
+            const commentElement = await createCommentElement(comment, "left");
+            document.querySelector(".picocmt > .comments").prepend(commentElement);
+        } else {
+            notify("open", "error", `评论发送失败: ${response.status} (${response.statusText})`, await response.text());
+        }
     } catch (e) {
         notify("open", "error", "评论发送失败", e);
     }
