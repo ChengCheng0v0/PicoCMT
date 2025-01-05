@@ -1,17 +1,20 @@
-use std::{net::SocketAddr, process};
+use std::{collections::HashMap, net::SocketAddr, process, sync::Arc};
 
 use axum::{
+    middleware,
     routing::{get, post},
     Router,
 };
 use clogger::*;
+use layers::rate_limit::{self, FixedTimeWindowByIpConfig};
 use sqlx::{MySql, MySqlPool, Pool};
-use tokio::net::TcpListener;
+use tokio::{net::TcpListener, sync::Mutex};
 use tower::limit::ConcurrencyLimitLayer;
 use tower_http::trace::TraceLayer;
 
 mod cmt_manager;
 mod handlers;
+mod layers;
 
 #[tokio::main]
 async fn main() {
@@ -36,7 +39,22 @@ async fn main() {
                 "/api/get_sub_comments",
                 get(handlers::get_sub_comments::handler),
             )
-            .route("/api/add_comment", post(handlers::add_comment::handler)),
+            .route(
+                "/api/add_comment",
+                post(handlers::add_comment::handler).layer(middleware::from_fn(
+                    move |req, next| {
+                        rate_limit::fixed_time_window_by_ip(
+                            Arc::new(FixedTimeWindowByIpConfig {
+                                requests: Mutex::new(HashMap::new()),
+                                limit: 1,
+                                window_size: 120,
+                            }),
+                            req,
+                            next,
+                        )
+                    },
+                )),
+            ),
     };
 
     // 连接数据库
@@ -58,7 +76,7 @@ async fn main() {
         .merge(routes.general)
         // 添加全局中间件
         .layer(TraceLayer::new_for_http()) // 日志跟踪
-        .layer(ConcurrencyLimitLayer::new(10)) // 全局并发限制
+        .layer(ConcurrencyLimitLayer::new(80)) // 全局并发限制
         .with_state(db_pool); // 共享数据库池
 
     // 监听地址
