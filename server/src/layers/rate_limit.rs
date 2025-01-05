@@ -27,7 +27,7 @@ pub async fn fixed_time_window_by_ip(
     request: Request,
     next: Next,
 ) -> impl IntoResponse {
-    let now = chrono::Utc::now().timestamp_millis() as u64;
+    let now = chrono::Utc::now().timestamp() as u64;
 
     let ip = match request.extensions().get::<ConnectInfo<SocketAddr>>() {
         Some(addr) => addr.0.ip(),
@@ -54,6 +54,8 @@ pub async fn fixed_time_window_by_ip(
 
     if *request_window == current_window {
         if *request_count < config.limit {
+            c_debug!(format!("(IP: {ip}) 请求次数 +1"));
+
             // 如果在当前时间窗口内请求次数未超过限制则次数 +1 并继续
             *request_count += 1;
             next.run(request).await
@@ -67,6 +69,8 @@ pub async fn fixed_time_window_by_ip(
                 .into_response()
         }
     } else {
+        c_debug!(format!("(IP: {ip}) 的时间窗口和请求次数已重置"));
+
         // 如果不在时间窗口内则重置时间窗口和请求次数
         *request_window = current_window;
         *request_count = 1;

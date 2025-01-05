@@ -21,6 +21,20 @@ async fn main() {
     // 初始化 CLogger
     init_clogger("/dev/null"); // 将输出写入黑洞
 
+    // 频率限制中间件的配置结构体
+    struct RateLimitConfigs {
+        add_comment: Arc<FixedTimeWindowByIpConfig>,
+    }
+
+    // 定义频率限制中间件配置
+    let rate_limit_configs = RateLimitConfigs {
+        add_comment: Arc::new(FixedTimeWindowByIpConfig {
+            requests: Mutex::new(HashMap::new()),
+            limit: 1,
+            window_size: 120,
+        }),
+    };
+
     // 路由的结构体
     struct Routes {
         root: Router<Pool<MySql>>,
@@ -41,19 +55,10 @@ async fn main() {
             )
             .route(
                 "/api/add_comment",
-                post(handlers::add_comment::handler).layer(middleware::from_fn(
-                    move |req, next| {
-                        rate_limit::fixed_time_window_by_ip(
-                            Arc::new(FixedTimeWindowByIpConfig {
-                                requests: Mutex::new(HashMap::new()),
-                                limit: 1,
-                                window_size: 120,
-                            }),
-                            req,
-                            next,
-                        )
-                    },
-                )),
+                post(handlers::add_comment::handler).layer(middleware::from_fn({
+                    let config = Arc::clone(&rate_limit_configs.add_comment);
+                    move |req, next| rate_limit::fixed_time_window_by_ip(config.clone(), req, next)
+                })),
             ),
     };
 
