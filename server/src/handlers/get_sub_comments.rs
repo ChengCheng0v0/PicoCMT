@@ -8,7 +8,7 @@ use axum::{
 use clogger::*;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::{Error, MySqlPool};
+use sqlx::MySqlPool;
 
 use crate::cmt_manager;
 

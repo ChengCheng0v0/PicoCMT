@@ -1,6 +1,5 @@
 use std::borrow::Cow;
 
-use clogger::*;
 use serde::Serialize;
 use sqlx::{FromRow, MySqlPool};
 use uuid::Uuid;
