@@ -1,0 +1,62 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main # 推送到 main 分支时触发
+  pull_request:
+    branches:
+      - main # 对 main 分支的 PR 触发
+  release:
+    types:
+      - published # 发布新 Release 时触发
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 登录 Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 构建和推送镜像
+      - name: Build Docker Image with 'latest' Tag
+        if: github.event_name != 'release' # 仅在非 Release 场景运行
+        run: |
+          cd docker
+          ./build.sh latest
+          docker tag picocmt:latest ${{ secrets.DOCKER_USERNAME }}/picocmt:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/picocmt:latest
+
+  build-and-push-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 登录 Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 构建和推送镜像
+      - name: Build Docker Image with Release Tag
+        if: github.event_name == 'release' # 仅在 Release 场景运行
+        run: |
+          RELEASE_TAG=${{ github.event.release.tag_name }}
+          cd docker
+          ./build.sh ${RELEASE_TAG}
+          docker tag picocmt:${RELEASE_TAG} ${{ secrets.DOCKER_USERNAME }}/picocmt:${RELEASE_TAG}
+          docker push ${{ secrets.DOCKER_USERNAME }}/picocmt:${RELEASE_TAG}
