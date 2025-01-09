@@ -8,7 +8,7 @@ PUBLISH_CLIENT_RES_PORT=${PUBLISH_CLIENT_RES_PORT:-80}
 CONFIG_PATH=${CONFIG_PATH:-/etc/picocmt/config.toml}
 
 docker rm ${NAME}
-docker run --name ${NAME} --mount type=bind,source=${CONFIG_PATH},target=/app/server/config.toml -e ONLY_SERVER=${ONLY_SERVER} --publish ${PUBLISH_SERVER_PORT}:3000 --publish ${PUBLISH_CLIENT_RES_PORT}:80 picocmt:${TAG}
+docker run --name ${NAME} --mount type=bind,source=${CONFIG_PATH},target=/app/server/config.toml -e ONLY_SERVER=${ONLY_SERVER} --publish ${PUBLISH_SERVER_PORT}:3000 --publish ${PUBLISH_CLIENT_RES_PORT}:80 chengcheng0v0/picocmt:${TAG}
 
 # Example
 # PUBLISH_SERVER_PORT=3001 PUBLISH_CLIENT_RES_PORT=81 ./rerun.sh
