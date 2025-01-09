@@ -5,6 +5,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use clap::Parser;
 use clogger::*;
 use layers::rate_limit::{self, FixedTimeWindowByIpConfig};
 use serde::Deserialize;
@@ -19,6 +20,16 @@ mod layers;
 
 #[tokio::main]
 async fn main() {
+    // 运行参数的结构体
+    #[derive(Parser)]
+    struct Args {
+        #[arg(long, default_value = "./config.toml")]
+        config_path: String,
+    }
+
+    // 获取运行参数
+    let args = Args::parse();
+
     // 配置的结构体
     #[derive(Deserialize)]
     struct Config {
@@ -54,7 +65,8 @@ async fn main() {
     }
 
     // 获取配置文件内容
-    let config_origin = match fs::read_to_string("config.toml") {
+    println!("[Info] 准备加载配置文件: {}", args.config_path);
+    let config_origin = match fs::read_to_string(args.config_path) {
         Ok(content) => content,
         Err(e) => {
             println!("[Error] 无法读取配置文件: {}", e);

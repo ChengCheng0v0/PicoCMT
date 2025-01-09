@@ -25,3 +25,5 @@ serde = "1.0.217"
 serde_json = "1.0.134"
 regex = "1.11.1"
 toml = "0.8.19"
+clap = { version = "4.5.24", features = ["derive"] }
+clap_derive = { version = "4.0.0-rc.1" }
