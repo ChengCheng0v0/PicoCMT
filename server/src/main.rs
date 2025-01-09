@@ -130,7 +130,7 @@ async fn main() {
             pool
         }
         Err(e) => {
-            c_error!(format!("数据库连接失败: {}", e));
+            c_error!(format!("数据库 '{database_url}' 连接失败: {e}"));
             process::exit(1); // 直接终止程序
         }
     };
