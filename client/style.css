@@ -1,29 +1,4 @@
-:root {
-    --color-base: #fff9ea;
-    --color-mantle: #fef4dd;
-    --color-crust: #ebdcb8;
-    --color-dent: #f5eedd;
-    --color-text: #7a5a43;
-    --color-text-selection: #f5d09f;
-    --color-key: #ae7954;
-    --color-weak: #cdb09c;
-    --color-divide: #c1a177;
-    --color-outline: #ffdb9a;
-    --color-accent: #f59768;
-    --color-accent-fg: #ffdb9a;
-    --color-overlay: #ebdcb8;
-    --color-positive: #a8cf88;
-    --color-positive-fg: #4c634e;
-    --color-danger: #e07a83;
-    --color-danger-fg: #723033;
-    --color-warning: #f9d48b;
-    --color-warning-fg: #8b5a2d;
-}
-
-:root {
-    --color-base: #1e1e2e;
-    --color-mantle: #2e2e3e;
-    --color-crust: #20202f;
+.picocmt {
     --color-dent: #2e2e3e;
     --color-text: #e3bfd3;
     --color-text-selection: #d08a9a;
@@ -34,24 +9,12 @@
     --color-accent: #ff95af;
     --color-accent-fg: #503843;
     --color-overlay: #504262;
-    --color-positive: #8ccf7e;
-    --color-positive-fg: #2f4726;
-    --color-danger: #e8647c;
-    --color-danger-fg: #4a1e2c;
-    --color-warning: #f5c26b;
-    --color-warning-fg: #4a341f;
-}
-
-html,
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    padding: 30px 20px;
-    background-color: var(--color-base);
+    --color-info: #8ccf7e;
+    --color-info-fg: #2f4726;
+    --color-error: #e8647c;
+    --color-error-fg: #4a1e2c;
+    --color-warn: #f5c26b;
+    --color-warn-fg: #4a341f;
 }
 
 .picocmt {
@@ -85,26 +48,26 @@ body {
 }
 .picocmt > .notify.info {
     display: inline-block;
-    background-color: var(--color-positive);
-    color: var(--color-positive-fg);
+    background-color: var(--color-info);
+    color: var(--color-info-fg);
     .close {
-        color: var(--color-positive-fg);
+        color: var(--color-info-fg);
     }
 }
 .picocmt > .notify.warn {
     display: inline-block;
-    background-color: var(--color-warning);
-    color: var(--color-warning-fg);
+    background-color: var(--color-warn);
+    color: var(--color-warn-fg);
     .close {
-        color: var(--color-warning-fg);
+        color: var(--color-warn-fg);
     }
 }
 .picocmt > .notify.error {
     display: inline-block;
-    background-color: var(--color-danger);
-    color: var(--color-danger-fg);
+    background-color: var(--color-error);
+    color: var(--color-error-fg);
     .close {
-        color: var(--color-danger-fg);
+        color: var(--color-error-fg);
     }
 }
 
