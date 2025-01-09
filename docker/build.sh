@@ -1,3 +1,4 @@
 #/bin/bash
 
-docker build -t picocmt:latest -f ./Dockerfile ..
+TAG=${1:-latest}
+docker build -t picocmt:${TAG} -f ./Dockerfile ..
