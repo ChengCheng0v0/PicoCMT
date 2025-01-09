@@ -1,0 +1,30 @@
+# 配置文件版本
+version = "1.0.0"
+
+[server]
+# 日志文件输出路径 (可使用 '/dev/null' 黑洞)
+log_output_file = "/dev/null"
+# 监听地址
+listener_addr = "127.0.0.1:3000"
+
+[database]
+# 数据库类型
+type = "mysql"
+# 数据库服务器
+host = "127.0.0.1" # 主机
+port = 3306        # 端口
+# 数据库名
+name = "picocmt"
+# 登录信息
+username = "test"          # 用户名
+password = "thisisapasswd" # 密码
+
+# 全局限制
+[server.limit]
+# 最大并发量
+max_concurrency = 80
+
+# 发送评论 API 限制 (使用固定时间窗口按 IP 限制)
+[server.limit.add_comment]
+limit = 1         # 单一时间窗口内的最大请求次数
+window_size = 120 # 窗口大小 (单位: s)
