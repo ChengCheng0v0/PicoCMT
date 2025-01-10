@@ -77,6 +77,10 @@ fn validate_request(payload: &Request) -> Result<(), ValidationError> {
 
     // 检查 email
     if let Some(email) = &payload.email {
+        if email.is_empty() {
+            return Ok(());
+        }
+
         if email.chars().count() > 32 {
             return Err(ValidationError::TooLong("email".into(), 32));
         }
