@@ -2,7 +2,7 @@
 
 import "https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/spark-md5/3.0.2/spark-md5.min.js";
 
-var picocmt;
+var picocmt = {};
 
 // 控制通知
 function notify(operation, type, title, content) {
@@ -103,7 +103,7 @@ async function renderComments(comments, container, alignment) {
         container.appendChild(commentElement);
 
         // 获取子评论并递归渲染
-        const subComments = await fetchComments(`${picocmt.dataset.server}/api/get_sub_comments?parent_id=${comment.id}`);
+        const subComments = await fetchComments(`${picocmt.config.server}/api/get_sub_comments?parent_id=${comment.id}`);
         if (subComments.length > 0) {
             await renderComments(subComments, container, "right");
         }
@@ -118,7 +118,7 @@ async function initComments() {
         return;
     }
 
-    const topComments = await fetchComments(`${picocmt.dataset.server}/api/get_top_comments`);
+    const topComments = await fetchComments(`${picocmt.config.server}/api/get_top_comments`);
     await renderComments(topComments, commentsContainer, "left");
 }
 
@@ -155,7 +155,7 @@ async function sendComment() {
     }
 
     // 构建请求
-    const apiUrl = `${picocmt.dataset.server}/api/add_comment`;
+    const apiUrl = `${picocmt.config.server}/api/add_comment`;
     const sendOptions = {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -185,11 +185,13 @@ async function sendComment() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    picocmt = document.getElementById("picocmt-inject");
+    picocmt.config = document.getElementById("picocmt-script").dataset;
 
     setTimeout(() => {
+        picocmt.element = document.getElementById("picocmt-inject");
+
         // 注入 PicoCMT 的 HTML 元素
-        picocmt.innerHTML = `
+        picocmt.element.innerHTML = `
             <div class="notify">
                 <div class="title"></div>
                 <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -219,5 +221,5 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
             sendComment();
         });
-    }, picocmt.dataset.load_delay);
+    }, picocmt.config.load_delay);
 });
