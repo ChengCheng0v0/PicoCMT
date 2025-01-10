@@ -184,14 +184,12 @@ async function sendComment() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    picocmt.config = document.getElementById("picocmt-script").dataset;
+function initPicoCMT() {
+    // 获取注入对象
+    picocmt.element = document.getElementById("picocmt-inject");
 
-    setTimeout(() => {
-        picocmt.element = document.getElementById("picocmt-inject");
-
-        // 注入 PicoCMT 的 HTML 元素
-        picocmt.element.innerHTML = `
+    // 注入 PicoCMT 的 HTML 元素
+    picocmt.element.innerHTML = `
             <div class="notify">
                 <div class="title"></div>
                 <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -209,17 +207,29 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="comments"></div>
         `;
 
-        // 启动评论渲染
-        initComments().catch(err => console.error("无法初始化评论: ", err));
+    // 启动评论渲染
+    initComments().catch(err => console.error("无法初始化评论: ", err));
 
-        // 添加关闭通知的操作监听
-        document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
-            notify("close");
-        });
+    // 添加关闭通知的操作监听
+    document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
+        notify("close");
+    });
 
-        // 添加发送评论的操作监听
-        document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
-            sendComment();
-        });
-    }, picocmt.config.load_delay);
+    // 添加发送评论的操作监听
+    document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
+        sendComment();
+    });
+}
+
+window.picocmt = {
+    init: initPicoCMT,
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    // 获取脚本对象
+    picocmt.config = document.getElementById("picocmt-script").dataset;
+
+    setTimeout(() => {
+        initPicoCMT();
+    }, picocmt.config.auto_load_delay);
 });
