@@ -187,35 +187,37 @@ async function sendComment() {
 document.addEventListener("DOMContentLoaded", () => {
     picocmt = document.getElementById("picocmt-inject");
 
-    // 注入 PicoCMT 的 HTML 元素
-    picocmt.innerHTML = `
-        <div class="notify">
-            <div class="title"></div>
-            <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
-            <div class="content"></div>
-        </div>
-        <div class="send">
-            <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
-            <textarea class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
-            <div class="bottom">
-                <input class="nickname" type="text" placeholder="昵称" required />
-                <input class="email" type="email" placeholder="邮箱 (选填)" />
-                <button class="send-button"><i class="fa-solid fa-paper-plane"></i>发送</button>
+    setTimeout(() => {
+        // 注入 PicoCMT 的 HTML 元素
+        picocmt.innerHTML = `
+            <div class="notify">
+                <div class="title"></div>
+                <button class="close"><i class="fa-solid fa-circle-xmark"></i></button>
+                <div class="content"></div>
             </div>
-        </div>
-        <div class="comments"></div>
-    `;
+            <div class="send">
+                <div class="title"><i class="fa-solid fa-pen-to-square"></i><span>撰写评论</span></div>
+                <textarea class="editor" placeholder="编辑评论内容..." maxlength="256" required></textarea>
+                <div class="bottom">
+                    <input class="nickname" type="text" placeholder="昵称" required />
+                    <input class="email" type="email" placeholder="邮箱 (选填)" />
+                    <button class="send-button"><i class="fa-solid fa-paper-plane"></i>发送</button>
+                </div>
+            </div>
+            <div class="comments"></div>
+        `;
 
-    // 启动评论渲染
-    initComments().catch(err => console.error("无法初始化评论: ", err));
+        // 启动评论渲染
+        initComments().catch(err => console.error("无法初始化评论: ", err));
 
-    // 添加关闭通知的操作监听
-    document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
-        notify("close");
-    });
+        // 添加关闭通知的操作监听
+        document.querySelector(".picocmt > .notify > .close").addEventListener("click", () => {
+            notify("close");
+        });
 
-    // 添加发送评论的操作监听
-    document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
-        sendComment();
-    });
+        // 添加发送评论的操作监听
+        document.querySelector(".picocmt > .send > .bottom > .send-button").addEventListener("click", () => {
+            sendComment();
+        });
+    }, picocmt.dataset.load_delay);
 });
