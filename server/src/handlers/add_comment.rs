@@ -107,11 +107,30 @@ pub async fn handler(
     }
 
     // 构建新评论的基本信息
+    // (使用 Ammonia 过滤 HTML)
     let new_comment_info = cmt_manager::NewCommentInfo {
         parent_id: payload.parent_id,
-        nickname: payload.nickname,
-        email: payload.email,
-        content: payload.content,
+        nickname: Some(payload.nickname)
+            .map(|v| {
+                let r = ammonia::clean(&v);
+                match r.is_empty() {
+                    true => "Ghost".into(),
+                    false => r,
+                }
+            })
+            .unwrap(),
+        email: payload.email.map(|v| ammonia::clean(&v)),
+        content: Some(payload.content)
+            .map(|v| {
+                let r = ammonia::clean(&v);
+                match r.is_empty() {
+                    true => {
+                        "<i>(Empty, because Ammonia has cleared all hacker content.)</i>".into()
+                    }
+                    false => r,
+                }
+            })
+            .unwrap(),
         ip_address: Some(addr.ip().to_string()),
     };
 
