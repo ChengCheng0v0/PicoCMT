@@ -159,7 +159,7 @@ async function sendComment() {
     const sendOptions = {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: `{"parent_id":null,"nickname":"${comment.nickname}","email":"${comment.email ? comment.email : ""}","content":"${comment.content}"}`,
+        body: `{"parent_id":null,"nickname":"${comment.nickname}","email":${comment.email ? `"` + comment.email + `"` : null},"content":"${comment.content}"}`,
     };
 
     // 发送请求
