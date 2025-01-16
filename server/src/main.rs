@@ -9,7 +9,7 @@ use clap::Parser;
 use clogger::*;
 use layers::rate_limit::{self, FixedTimeWindowByIpConfig};
 use serde::Deserialize;
-use sqlx::{MySql, MySqlPool, Pool};
+use sqlx::{PgPool, Pool, Postgres};
 use tokio::{net::TcpListener, sync::Mutex};
 use tower::limit::ConcurrencyLimitLayer;
 use tower_http::trace::TraceLayer;
@@ -101,8 +101,8 @@ async fn main() {
 
     // 路由的结构体
     struct Routes {
-        root: Router<Pool<MySql>>,
-        general: Router<Pool<MySql>>,
+        root: Router<Pool<Postgres>>,
+        general: Router<Pool<Postgres>>,
     }
 
     // 定义路由
@@ -136,7 +136,7 @@ async fn main() {
         config.database.port,
         config.database.name
     );
-    let db_pool = match MySqlPool::connect(&database_url).await {
+    let db_pool = match PgPool::connect(&database_url).await {
         Ok(pool) => {
             c_log!(format!("数据库连接成功: {}", database_url));
             pool

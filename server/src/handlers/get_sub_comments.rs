@@ -8,7 +8,7 @@ use axum::{
 use clogger::*;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::MySqlPool;
+use sqlx::PgPool;
 
 use crate::cmt_manager;
 
@@ -49,7 +49,7 @@ impl From<cmt_manager::Comment> for Response {
 
 // Axum Handler
 pub async fn handler(
-    State(db_pool): State<MySqlPool>,
+    State(db_pool): State<PgPool>,
     Query(params): Query<Params>,
 ) -> impl IntoResponse {
     if Some(&params.parent_id).is_some() {

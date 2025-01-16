@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 
 use serde::Serialize;
-use sqlx::{FromRow, MySqlPool};
+use sqlx::{FromRow, PgPool};
 use uuid::Uuid;
 
 // 评论的结构体
@@ -28,7 +28,7 @@ pub struct NewCommentInfo {
 }
 
 // 获取所有顶级评论
-pub async fn get_top_comments(db_pool: &MySqlPool) -> Result<Vec<Comment>, sqlx::Error> {
+pub async fn get_top_comments(db_pool: &PgPool) -> Result<Vec<Comment>, sqlx::Error> {
     let comments = sqlx::query_as::<_, Comment>(
         "SELECT * FROM comments WHERE parent_id IS NULL ORDER BY created_at DESC",
     )
@@ -40,11 +40,11 @@ pub async fn get_top_comments(db_pool: &MySqlPool) -> Result<Vec<Comment>, sqlx:
 
 // 根据父评论 ID 获取所有子评论
 pub async fn get_sub_comments(
-    db_pool: &MySqlPool,
+    db_pool: &PgPool,
     parent_id: Cow<'_, str>,
 ) -> Result<Vec<Comment>, sqlx::Error> {
     let comments = sqlx::query_as::<_, Comment>(
-        "SELECT * FROM comments WHERE parent_id = ? ORDER BY created_at DESC",
+        "SELECT * FROM comments WHERE parent_id = $1 ORDER BY created_at DESC",
     )
     .bind(parent_id)
     .fetch_all(db_pool)
@@ -55,7 +55,7 @@ pub async fn get_sub_comments(
 
 // 新增一条评论
 pub async fn add_comment(
-    db_pool: &MySqlPool,
+    db_pool: &PgPool,
     new_comment_info: NewCommentInfo,
 ) -> Result<Comment, sqlx::Error> {
     // 生成动态信息
@@ -76,7 +76,7 @@ pub async fn add_comment(
 
     // 写入数据库
     sqlx::query(
-        "INSERT INTO comments (id, parent_id, nickname, email, content, created_at, ip_address) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO comments (id, parent_id, nickname, email, content, created_at, ip_address) VALUES ($1, $2, $3, $4, $5, $6, $7)",
     )
     .bind(&comment.id)
     .bind(&comment.parent_id)

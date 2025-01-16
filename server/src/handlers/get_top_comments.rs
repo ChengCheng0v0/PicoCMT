@@ -2,7 +2,7 @@ use axum::{extract::State, response::IntoResponse, Json};
 use clogger::*;
 use serde::Serialize;
 use serde_json::json;
-use sqlx::MySqlPool;
+use sqlx::PgPool;
 
 use crate::cmt_manager;
 
@@ -36,7 +36,7 @@ impl From<cmt_manager::Comment> for Response {
 }
 
 // Axum Handler
-pub async fn handler(State(db_pool): State<MySqlPool>) -> impl IntoResponse {
+pub async fn handler(State(db_pool): State<PgPool>) -> impl IntoResponse {
     match cmt_manager::get_top_comments(&db_pool).await {
         Ok(comments) => {
             // 将 Comment 转换为 Response

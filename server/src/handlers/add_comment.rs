@@ -5,7 +5,7 @@ use clogger::*;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-use sqlx::MySqlPool;
+use sqlx::PgPool;
 
 use crate::cmt_manager;
 
@@ -93,7 +93,7 @@ fn validate_request(payload: &Request) -> Result<(), ValidationError> {
 
 // Axum Handler
 pub async fn handler(
-    State(db_pool): State<MySqlPool>,
+    State(db_pool): State<PgPool>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     Json(payload): Json<Request>,
 ) -> impl IntoResponse {
