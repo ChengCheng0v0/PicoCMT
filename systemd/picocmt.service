@@ -1,0 +1,15 @@
+[Unit]
+Description=A simple comment management system
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ConditionPathExists=/etc/picocmt/config.toml
+ExecStart=/opt/picocmt/server/picocmt --config-path=/etc/picocmt/config.toml
+Restart=on-failure
+User=picocmt
+WorkingDirectory=/opt/picocmt
+
+[Install]
+WantedBy=default.target
